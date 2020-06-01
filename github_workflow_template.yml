@@ -20,10 +20,6 @@ jobs:
         repository: romanlutz/github-repo-stats
         path: github-repo-stats
     
-    - name: Change working directory
-      run: cd github-repo-stats
-      shell: bash
-    
     - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
@@ -31,18 +27,19 @@ jobs:
     
     - name: Install requirements
       run: pip install -r requirements.txt
+      working-directory: github-repo-stats
       shell: bash
     
     - name: Collect repo stats
-      run: python collect_stats.py --org <org> --repo <repo> --token $(ACCESS_TOKEN) --file-name ../<stats repo>/stats.json
+      run: python collect_stats.py --org <org> --repo <repo> --token "$TOKEN" --file-name ../<stats repo>/stats.json
+      working-directory: github-repo-stats
       shell: bash
-    
-    - name: Change working directory
-      run: cd ../<stats repo>
-      shell: bash
+      env:
+        TOKEN: ${{ secrets.ACCESS_TOKEN }}
     
     - name: push
       uses: github-actions-x/commit@v2.6
+      working-directory: <stats repo>
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         push-branch: 'master'
