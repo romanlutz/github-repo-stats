@@ -1,0 +1,53 @@
+name: github-repo-stats
+
+on:
+  schedule:
+    - cron: 0 0 * * *  # once a day
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        path: <stats repo>
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        repository: romanlutz/github-repo-stats
+        path: github-repo-stats
+    
+    - name: Change working directory
+      run: cd github-repo-stats
+      shell: bash
+    
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    
+    - name: Install requirements
+      run: pip install -r requirements.txt
+      shell: bash
+    
+    - name: Collect repo stats
+      run: python collect_stats.py --org <org> --repo <repo> --token $(ACCESS_TOKEN) --file-name ../<stats repo>/stats.json
+      shell: bash
+    
+    - name: Change working directory
+      run: cd ../<stats repo>
+      shell: bash
+    
+    - name: push
+      uses: github-actions-x/commit@v2.6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        push-branch: 'master'
+        commit-message: 'publish stats update'
+        force-add: 'true'
+        files: stats.json
+        name: <name>
+        email: <email>
