@@ -56,7 +56,7 @@ def recursive_update(d, u):
     """Copied from https://stackoverflow.com/questions/3232943/update-value-of-a-nested-dictionary-of-varying-depth"""
     for k, v in u.items():
         if isinstance(v, abc.Mapping):
-            d[k] = update(d.get(k, {}), v)
+            d[k] = recursive_update(d.get(k, {}), v)
         else:
             d[k] = v
     return d
