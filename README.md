@@ -46,9 +46,9 @@ Copy your token and store it in your new repo under "Settings", "Secrets" as
 have access to your token, so be careful who you grant access.
 
 Navigate to "Actions" and copy-paste the contents of
-`github_workflow_template.yml` from this repository. Replace all occurrences
-of `<org>` with the organization of the repository you want to track, and
-`<repo>` with the repository itself.
+`github_workflow_template.yml` from this repository. Replace the values of the
+environment variables under `env` near the top of the file with appropriate
+ones for your context.
 
 ### Deploy a webpage to GitHub pages and visualize the results
 
