@@ -1,5 +1,5 @@
 import argparse
-from collections import defaultdict
+from collections import defaultdict, abc
 import github
 import json
 import logging
@@ -15,12 +15,12 @@ def get_client(token):
     if token is not None:
         _logger.info("Received access token.")
         access_token = token
-    
+
     else:
         with _LogWrapper("reading access token from local file"):
             with open("access_token", "r") as access_token_file:
                 access_token = access_token_file.read()
-    
+
     return github.Github(access_token)
 
 
@@ -50,6 +50,16 @@ class _LogWrapper:
         if value is not None:
             raise value
         _logger.info("Completed %s", self._description)
+
+
+def recursive_update(d, u):
+    """Copied from https://stackoverflow.com/questions/3232943/update-value-of-a-nested-dictionary-of-varying-depth"""
+    for k, v in u.items():
+        if isinstance(v, abc.Mapping):
+            d[k] = update(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d
 
 
 def main(args):
@@ -145,7 +155,7 @@ def main(args):
         combined_stats = read_previous_stats_from_file(file_name)
 
     with _LogWrapper("combining old and new stats"):
-        combined_stats.update(stats)
+        recursive_update(combined_stats, stats)
 
     with _LogWrapper("writing stats to a file"):
         write_stats_to_file(file_name, combined_stats)
