@@ -20,7 +20,9 @@ the results on a custom webpage.
 
 Visit the [GitHub website](https://github.com) and click on the plus symbol in
 the top right corner next to your profile picture. Select "new repository" and
-provide an appropriate name, e.g. "<repo name>-stats".
+provide an appropriate name, e.g. "<repo name>-stats". In the following we
+assume that you chose "<repo name>-stats", so if you choose something else you
+may have to make additional changes.
 
 ### Configure the GitHub workflow
 
@@ -50,6 +52,44 @@ Navigate to "Actions" and copy-paste the contents of
 environment variables under `env` near the top of the file with appropriate
 ones for your context.
 
-### Deploy a webpage to GitHub pages and visualize the results
+Also copy the files under the `docs` directory into the new repository into
+their own `docs` directory. Make sure to substitute the following parts of the
+`conf.py` file:
 
-TODO
+```python
+author = '<First Last>'
+org = '<org>'  # the org in which you created the stats repo
+repo = '<repo>'  # the repository you are tracking
+```
+
+In the `index.rst` you can replace the title from `Repository-Stats` to
+whatever you find appropriate.
+
+Lastly, copy over the `requirements.txt` file. Commit all these changes.
+
+By default this will run once a day and perform the following actions:
+
+- use `github-repo-stats` script to pull in stats from GitHub
+- merge stats with the existing ones in `stats.json` (GitHub provides certain
+  stats only for the last 14 days)
+- commit updated `stats.json` back to GitHub
+- build webpage with visualizations
+- commit webpage files to the `gh-pages` branch of the stats repo resulting
+  in a deployment to the webpage at `https://<org>.github.io/<repo>-stats`
+
+For debugging purposes it can sometimes be beneficial to add an additional
+trigger on `push` to the stats repo. We recommend this only to experienced
+users, though.
+
+### Bonus: add a README
+
+It's usually a good practice to add a README to your repository to explain its
+purpose. Refer to the
+[fairlearn-stats](https://github.com/romanlutz/fairlearn-stats) repo for an
+example.
+
+### Updates - how do I get the latest charts?
+
+You don't automatically get the latest charts, because they're a part of
+`index.rst`. Simply copy over the latest version whenever you'd like to
+upgrade and it should work automatically.
