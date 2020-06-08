@@ -1,3 +1,4 @@
 pygithub
 sphinx
 bokeh
+colorcet
