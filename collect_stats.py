@@ -135,17 +135,18 @@ def main(args):
 
     with _LogWrapper("collecting pull request stats"):
         stats['pull_requests'] = defaultdict(lambda: defaultdict(int))
-        for pull_request in repo.get_pulls(state='all', sort='created', base='main'):
-            author = pull_request.user.login
-            stats['pull_requests'][author]['created'] += 1
+        for base_branch in ['master', 'main']:
+            for pull_request in repo.get_pulls(state='all', sort='created', base=base_branch):
+                author = pull_request.user.login
+                stats['pull_requests'][author]['created'] += 1
 
-            if pull_request.closed_at is None:
-                is_open = True
-            else:
-                is_open = False
+                if pull_request.closed_at is None:
+                    is_open = True
+                else:
+                    is_open = False
 
-            stats['pull_requests'][author]['open'] += int(is_open)
-            stats['pull_requests'][author]['closed'] += 1 - int(is_open)
+                stats['pull_requests'][author]['open'] += int(is_open)
+                stats['pull_requests'][author]['closed'] += 1 - int(is_open)
 
         stats['pull_request_comments'] = defaultdict(int)
         for comment in repo.get_pulls_comments():
