@@ -26,7 +26,7 @@ def get_client(token):
 
 def write_stats_to_file(file_name, stats):
     with open(file_name, 'w') as stats_file:
-        json.dump(stats, stats_file)
+        json.dump(stats, stats_file, indent=4)
 
 
 def read_previous_stats_from_file(file_name):
