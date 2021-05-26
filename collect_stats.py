@@ -135,7 +135,7 @@ def main(args):
 
     with _LogWrapper("collecting pull request stats"):
         stats['pull_requests'] = defaultdict(lambda: defaultdict(int))
-        for pull_request in repo.get_pulls(state='all', sort='created', base='master'):
+        for pull_request in repo.get_pulls(state='all', sort='created', base='main'):
             author = pull_request.user.login
             stats['pull_requests'][author]['created'] += 1
 
